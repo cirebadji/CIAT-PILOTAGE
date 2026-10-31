@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block title %}Tableau de bord — CIAT{% endblock %}{% block page_title %}Vue d'ensemble{% endblock %}
+{% block content %}
+<div class="welcome-row"><div><h1>Bonjour {{ request.user.username }} <span>👋</span></h1><p>Voici un aperçu des performances de l'incubateur.</p></div><a class="btn btn-primary" href="{% url 'project_create' %}"><i class="fa-solid fa-plus me-2"></i>Nouveau projet</a></div>
+{% if fictif %}<div class="demo-banner"><i class="fa-solid fa-circle-info"></i> Mode démonstration : les données affichées sont fictives et ne représentent pas les résultats réels du CIAT.</div>{% endif %}
+<div class="kpi-grid">
+{% for key,val in kpi.items %}
+<div class="kpi-card"><div class="kpi-top"><span>{{ key|title }}</span><i class="fa-solid fa-chart-line"></i></div><strong>{% if key == 'financements' %}{{ val|floatformat:0 }} FCFA{% else %}{{ val }}{% endif %}</strong><small>Valeur calculée depuis la base</small></div>
+{% endfor %}
+</div>
+<div class="section-heading"><div><h2>Activité & performance</h2><p>Répartition actuelle des projets enregistrés</p></div><a href="{% url 'analytics' %}" class="text-link">Voir les analyses <i class="fa-solid fa-arrow-right"></i></a></div>
+<div class="charts-grid"><div class="panel"><div class="panel-head"><h3>Projets par domaine</h3><span>Répartition</span></div><canvas id="domainChart"></canvas></div><div class="panel"><div class="panel-head"><h3>Statuts des projets</h3><span>Vue globale</span></div><canvas id="statusChart"></canvas></div></div>
+<div class="panel mt-4"><div class="panel-head"><div><h3>Projets récemment enregistrés</h3><span>Dernières entrées de la base</span></div><a href="{% url 'project_list' %}" class="text-link">Tout afficher</a></div><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Projet</th><th>Porteur</th><th>Domaine</th><th>Statut</th><th>Progression</th></tr></thead><tbody>{% for p in recent %}<tr><td><a href="{% url 'project_detail' p.pk %}" class="project-name">{{ p.nom }}</a></td><td>{{ p.porteur.nom_complet }}</td><td>{{ p.domaine.nom }}</td><td><span class="status">{{ p.get_statut_display }}</span></td><td><div class="progress"><div class="progress-bar" style="width:{{ p.progression }}%"></div></div><small>{{ p.progression }}%</small></td></tr>{% empty %}<tr><td colspan="5">Aucun projet enregistré.</td></tr>{% endfor %}</tbody></table></div></div>
+{{ domaines|json_script:"domain-data" }}{{ statuts|json_script:"status-data" }}
+{% endblock %}
+{% block scripts %}<script>
+const dd=JSON.parse(document.getElementById('domain-data').textContent), sd=JSON.parse(document.getElementById('status-data').textContent);
+new Chart(document.getElementById('domainChart'),{type:'bar',data:{labels:dd.map(x=>x.domaine__nom),datasets:[{label:'Projets',data:dd.map(x=>x.total),backgroundColor:'#b97836',borderRadius:7}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+new Chart(document.getElementById('statusChart'),{type:'doughnut',data:{labels:sd.map(x=>x.statut),datasets:[{data:sd.map(x=>x.total),backgroundColor:['#b97836','#d99b58','#425b4a','#7c9b83','#d8c5ad','#9eaaa2','#65788d','#b45b50','#c5c5c5'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+</script>{% endblock %}

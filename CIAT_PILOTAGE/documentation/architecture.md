@@ -1,0 +1,2 @@
+# Architecture technique
+Django suit une architecture MVT. `config` contient la configuration et le routage. `projects` porte les entités métier et les vues de pilotage. Les applications `accounts`, `cohorts`, `partnerships`, `analytics`, `ai_assistant` et `reports` isolent les domaines fonctionnels et sont prêtes à recevoir leurs services dédiés. SQLite est utilisé en développement ; la configuration peut être adaptée à PostgreSQL pour la production.

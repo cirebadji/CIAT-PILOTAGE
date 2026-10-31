@@ -1,0 +1,11 @@
+# Dictionnaire des données
+- Domaine : nom unique et description.
+- Cohorte : nom, année, dates et description.
+- PorteurProjet : identité, email, téléphone, genre et organisation.
+- Mentor : identité, spécialité et email.
+- Partenaire : nom, type, contact et coordonnées.
+- Projet : nom, description, porteur, domaine, cohorte, mentor, partenaires, dates, statut, progression, budget, financement et marqueur fictif.
+- Jalon : projet, titre, description, date limite et état d'achèvement.
+- Financement : projet, source, montants demandé/obtenu, date et statut.
+- HistoriqueProgression : projet, progression, observation, date et auteur.
+- Notification : utilisateur, message, état de lecture et date.
